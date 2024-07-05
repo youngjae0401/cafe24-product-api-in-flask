@@ -61,10 +61,7 @@ class Cafe24Service:
                 for cafe24_product in cafe24_products['products']:
                     # 카페24 상품 API에 custom_product_code로 조회 시 LIKE 검색으로 조회되기 때문에 일치하는지 확인이 필요
                     if str(origin_product['id']) == str(cafe24_product['custom_product_code']):
-                        
                         time.sleep(0.5)
-                        
-                        logger.info(f"product_no = {cafe24_product['product_no']}")
 
                         # 수정할 상품 정보
                         request_product_data = {
