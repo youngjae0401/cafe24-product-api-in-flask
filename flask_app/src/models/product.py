@@ -5,7 +5,7 @@ class Product:
         db = Database()
         connection = db.get_connection()
         cursor = connection.cursor(dictionary=True)
-        
+
         try:
             select_query = '''
             SELECT
@@ -30,12 +30,12 @@ class Product:
             raise
         finally:
             cursor.close()
-    
+
     def find_by_id(product_no):
         db = Database()
         connection = db.get_connection()
         cursor = connection.cursor(dictionary=True)
-        
+
         try:
             select_query = '''
             SELECT
@@ -60,4 +60,3 @@ class Product:
             raise
         finally:
             cursor.close()
-            

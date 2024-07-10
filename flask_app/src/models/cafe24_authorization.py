@@ -19,7 +19,7 @@ class Cafe24Authorization:
         db = Database()
         connection = db.get_connection()
         cursor = connection.cursor(dictionary=True)
-        
+
         try:
             select_query = '''
             SELECT
@@ -38,12 +38,12 @@ class Cafe24Authorization:
             raise
         finally:
             cursor.close()
-        
+
     def save(token_dict):
         db = Database()
         connection = db.get_connection()
         cursor = connection.cursor()
-        
+
         try:
             insert_query = '''
             INSERT INTO cafe24_autorization (access_token, expires_at, refresh_token, refresh_token_expires_at, issued_at)
@@ -60,4 +60,3 @@ class Cafe24Authorization:
             raise
         finally:
             cursor.close()
-            

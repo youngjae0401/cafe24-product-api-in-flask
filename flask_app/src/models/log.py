@@ -32,4 +32,3 @@ class Log:
             raise
         finally:
             cursor.close()
-            

@@ -36,4 +36,3 @@ class ApiLog:
             raise
         finally:
             cursor.close()
-            
