@@ -12,7 +12,7 @@ class Cafe24Service:
 
     def find_product_count(self):
         return self.cafe24_api.find_product_count()
-        
+
     def find_product(self, cafe24_product_no):
         return json.loads(self.cafe24_api.find_product(product_no=cafe24_product_no))
 
@@ -23,26 +23,26 @@ class Cafe24Service:
             'limit': request.get('limit'),
             'offset': request.get('offset')
         }
-        
+
         return self.cafe24_api.find_products(params=params)
-    
+
     def update_product(self, origin_product_no):
-        return self.__private_update_products(origin_products=[Product.find_by_id(product_no=origin_product_no)])
-        
+        return self.__update_products(origin_products=[Product.find_by_id(product_no=origin_product_no)])
+
     def update_products(self):
-        return self.__private_update_products(origin_products=Product.find_all())
-    
+        return self.__update_products(origin_products=Product.find_all())
+
     def find_product_variant(self, cafe24_product_no, cafe24_variant_code):
         return self.cafe24_api.find_product_variant(product_no=cafe24_product_no, variant_code=cafe24_variant_code)
-    
+
     def find_product_variants(self, cafe24_product_no):
         return self.cafe24_api.find_product_variants(product_no=cafe24_product_no)
-    
+
     def delete_product(self, cafe24_product_no):
         return self.delete_product(product_no=cafe24_product_no)
-    
+
     # API 호출은 초당 2회 제한이 있기 때문에 API이 호출되기 전에 sleep이 필요하다.
-    def __private_update_products(self, origin_products):
+    def __update_products(self, origin_products):
         try:
             result_cafe24_products = []
             for origin_product in origin_products:
@@ -57,7 +57,7 @@ class Cafe24Service:
                     "custom_product_code": str(origin_product['id'])
                 }
                 cafe24_products = json.loads(self.cafe24_api.find_products(params=params))
-                
+
                 for cafe24_product in cafe24_products['products']:
                     # 카페24 상품 API에 custom_product_code로 조회 시 LIKE 검색으로 조회되기 때문에 일치하는지 확인이 필요
                     if str(origin_product['id']) == str(cafe24_product['custom_product_code']):
@@ -75,16 +75,16 @@ class Cafe24Service:
                                 "product_length": ""
                             }
                         }
-                        
+
                         # update product
                         cafe24_update_product = self.cafe24_api.update_product(product_no=str(cafe24_product['product_no']), request_data=request_product_data)
                         ApiLog.save('UPDATE PRODUCT', origin_product['id'], int(cafe24_product['product_no']), cafe24_update_product)
 
                         time.sleep(0.5)
-                        
+
                         # 카페24 상품 품목 조회
                         cafe24_product_variants = json.loads(self.cafe24_api.find_product_variants(product_no=str(cafe24_product['product_no'])))
-                        
+
                         request_product_variant_data = []
                         for idx, variants in enumerate(cafe24_product_variants['variants']):
                             # 옵션이 없어도 품목이 조회되는 경우 발생
@@ -96,16 +96,16 @@ class Cafe24Service:
                                     "variant_code": variants['variant_code'], # 필수
                                     "custom_variant_code": ""
                                 })
-                        
+
                         api_log_message = 'NOT OPTIONS'
                         cafe24_update_product_variants = None
                         if request_product_variant_data:
                             # update product variants
                             cafe24_update_product_variants = self.cafe24_api.update_product_variants(product_no=str(cafe24_product['product_no']), request_data=request_product_variant_data)
                             api_log_message = 'UPDATE PRODUCT VARIANTS'
-                        
+
                         ApiLog.save(api_log_message, origin_product['id'], int(cafe24_product['product_no']), cafe24_update_product_variants)
-                        
+
                         result_cafe24_products.append(cafe24_product)
 
             return jsonify(result_cafe24_products)

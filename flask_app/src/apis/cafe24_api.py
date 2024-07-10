@@ -56,11 +56,8 @@ class Cafe24API:
                         "grant_type": "refresh_token",
                         "refresh_token": token_data['refresh_token']
                     }
-                    cafe24_token = self.get_auth(data=data)
-                    token_dict = json.loads(cafe24_token)
-                    Cafe24Authorization.save(token_dict)
 
-                    return token_dict['access_token']
+                    return self.__save_and_return_access_token(data)
 
             # 토큰 정보가 없을 경우
             data = {
@@ -68,17 +65,41 @@ class Cafe24API:
                 "code": self.code,
                 "redirect_uri": self.redirect_uri
             }
-            cafe24_token = self.get_auth(data=data)
-            token_dict = json.loads(cafe24_token)
-            Cafe24Authorization.save(token_dict)
 
-            return token_dict['access_token']
+            return self.__save_and_return_access_token(data)
         except Exception as e:
             logger.error(f"Failed to get access token: {e}")
             Log.save("ERROR", f"Failed to get access token: {e}")
             raise
-    
-    def get_headers(self):
+
+    def find_product(self, product_no):
+        return self.call_api("GET", f"/admin/products/{product_no}", headers=self.__get_headers())
+
+    def find_products(self, params=None):
+        return self.call_api("GET", "/admin/products", params=params, headers=self.__get_headers())
+
+    def find_product_variants(self, product_no):
+        return self.call_api("GET", f"/admin/products/{product_no}/variants", headers=self.__get_headers())
+
+    def find_product_variant(self, product_no, variant_code):
+        return self.call_api("GET", f"/admin/products/{product_no}/variants/{variant_code}", headers=self.__get_headers())
+
+    def find_product_count(self):
+        return self.call_api("GET", "/admin/products/count", headers=self.__get_headers())
+
+    def update_product(self, product_no, request_data):
+        return self.call_api("PUT", f"/admin/products/{product_no}", json={"request": request_data}, headers=self.__get_headers())
+
+    def update_product_variants(self, product_no, request_data):
+        return self.call_api("PUT", f"/admin/products/{product_no}/variants", json={"request": request_data}, headers=self.__get_headers())
+
+    def update_product_variant(self, product_no, variant_code, request_data):
+        return self.call_api("PUT", f"/admin/products/{product_no}/variants/{variant_code}", json={"request": request_data}, headers=self.__get_headers())
+
+    def delete_product(self, product_no):
+        return self.call_api("DELETE", f"/admin/products/{product_no}", headers=self.__get_headers())
+
+    def __get_headers(self):
         access_token = self.get_access_token()
 
         return {
@@ -87,29 +108,9 @@ class Cafe24API:
             "X-Cafe24-Api-Version": self.version
         }
 
-    def find_product(self, product_no):
-        return self.call_api("GET", f"/admin/products/{product_no}", headers=self.get_headers())
+    def __save_and_return_access_token(self, data):
+        cafe24_token = self.get_auth(data=data)
+        token_dict = json.loads(cafe24_token)
+        Cafe24Authorization.save(token_dict)
 
-    def find_products(self, params=None):
-        return self.call_api("GET", "/admin/products", params=params, headers=self.get_headers())
-
-    def find_product_variants(self, product_no):
-        return self.call_api("GET", f"/admin/products/{product_no}/variants", headers=self.get_headers())
-    
-    def find_product_variant(self, product_no, variant_code):
-        return self.call_api("GET", f"/admin/products/{product_no}/variants/{variant_code}", headers=self.get_headers())
-
-    def find_product_count(self):
-        return self.call_api("GET", "/admin/products/count", headers=self.get_headers())
-    
-    def update_product(self, product_no, request_data):
-        return self.call_api("PUT", f"/admin/products/{product_no}", json={"request": request_data}, headers=self.get_headers())
-    
-    def update_product_variants(self, product_no, request_data):
-        return self.call_api("PUT", f"/admin/products/{product_no}/variants", json={"request": request_data}, headers=self.get_headers())
-
-    def update_product_variant(self, product_no, variant_code, request_data):
-        return self.call_api("PUT", f"/admin/products/{product_no}/variants/{variant_code}", json={"request": request_data}, headers=self.get_headers())
-
-    def delete_product(self, product_no):
-        return self.call_api("DELETE", f"/admin/products/{product_no}", headers=self.get_headers())
+        return token_dict['access_token']
