@@ -12,6 +12,7 @@ class Product:
             box_length,
             box_height
         '''
+
     def find_all():
         db = Database()
         connection = db.get_connection()
