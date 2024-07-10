@@ -1,28 +1,32 @@
 from database import Database
 
 class Product:
+    def __get_common_select_fields():
+        return '''
+            id,
+            hscode,
+            title_en,
+            weight,
+            box_volume,
+            box_width,
+            box_length,
+            box_height
+        '''
     def find_all():
         db = Database()
         connection = db.get_connection()
         cursor = connection.cursor(dictionary=True)
 
         try:
-            select_query = '''
-            SELECT
-                id,
-                hscode,
-                title_en,
-                weight,
-                box_volume,
-                box_width,
-                box_length,
-                box_height
-            FROM
-                products
-            WHERE
-                parent_id IS NULL
-            ORDER BY id DESC
-            LIMIT 1000
+            select_query = f'''
+                SELECT
+                    {Product.__get_common_select_fields()}
+                FROM
+                    products
+                WHERE
+                    parent_id IS NULL
+                ORDER BY id DESC
+                LIMIT 1000
             '''
             cursor.execute(select_query)
             return cursor.fetchall()
@@ -37,22 +41,15 @@ class Product:
         cursor = connection.cursor(dictionary=True)
 
         try:
-            select_query = '''
-            SELECT
-                id,
-                hscode,
-                title_en,
-                weight,
-                box_volume,
-                box_width,
-                box_length,
-                box_height
-            FROM
-                products
-            WHERE
-                id = %(product_no)s
-            AND
-                parent_id IS NOT NULL
+            select_query = f'''
+                SELECT
+                    {Product.__get_common_select_fields()}
+                FROM
+                    products
+                WHERE
+                    id = %(product_no)s
+                AND
+                    parent_id IS NOT NULL
             '''
             cursor.execute(select_query, {'product_no': product_no})
             return cursor.fetchone()
