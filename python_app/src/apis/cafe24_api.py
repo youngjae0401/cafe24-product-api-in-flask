@@ -17,7 +17,7 @@ class Cafe24API:
     def call_api(self, method, endpoint, data=None, json=None, params=None, headers=None):
         url = self.rest_api_url + endpoint
 
-        Log.save("INFO", f"API request: method={method}, url={url}, data={data}, json={json}, params={params}")
+        Log.save("INFO", f"API REQUEST: method={method}, url={url}, data={data}, json={json}, params={params}")
         
         try:
             response = requests.request(method, url, headers=headers, data=data, json=json, params=params)
@@ -27,7 +27,7 @@ class Cafe24API:
             Log.save("ERROR", f"API call failed: {e}")
             raise
 
-        Log.save("INFO", f"API response: status_code={response.status_code}, response={response.text}")
+        Log.save("INFO", f"API RESPONSE: status_code={response.status_code}, response={response.text}")
 
         return response.text
 
