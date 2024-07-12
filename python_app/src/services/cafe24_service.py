@@ -106,7 +106,10 @@ class Cafe24Service:
         return self.cafe24_api.find_product_variants(product_no=cafe24_product_no, params={'shop_no': self.shop_no})
 
     def update_product(self, origin_product_no):
-        return self.__update_products(origin_products=[Product.find_by_id(product_no=origin_product_no)])
+        origin_product = Product.find_by_id(product_no=origin_product_no)
+        origin_products = [] if origin_product is None else [origin_product]
+        
+        return self.__update_products(origin_products=origin_products)
 
     def update_products(self):
         return self.__update_products(origin_products=Product.find_all())
@@ -130,7 +133,7 @@ class Cafe24Service:
 
     # API 호출은 초당 2회 제한이 있기 때문에 API이 호출되기 전에 sleep으로 지연이 필요
     def __update_products(self, origin_products=None):
-        if not origin_products:
+        if not origin_products or origin_products is None:
             return jsonify([])
 
         try:
