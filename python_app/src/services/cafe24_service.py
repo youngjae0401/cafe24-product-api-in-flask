@@ -103,7 +103,7 @@ class Cafe24Service:
         return self.cafe24_api.find_products(params=params)
 
     def find_product_variants(self, cafe24_product_no):
-        return self.cafe24_api.find_product_variants(product_no=cafe24_product_no)
+        return self.cafe24_api.find_product_variants(product_no=cafe24_product_no, params={'shop_no': self.shop_no})
 
     def update_product(self, origin_product_no):
         return self.__update_products(origin_products=[Product.find_by_id(product_no=origin_product_no)])

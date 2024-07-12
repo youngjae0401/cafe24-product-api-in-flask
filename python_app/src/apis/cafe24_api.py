@@ -79,11 +79,11 @@ class Cafe24API:
     def find_products(self, params=None):
         return self.call_api("GET", "/admin/products", params=params, headers=self.__get_headers())
 
-    def find_product_variants(self, product_no):
-        return self.call_api("GET", f"/admin/products/{product_no}/variants", headers=self.__get_headers())
+    def find_product_variants(self, product_no, params=None):
+        return self.call_api("GET", f"/admin/products/{product_no}/variants", params=params, headers=self.__get_headers())
 
-    def find_product_variant(self, product_no, variant_code):
-        return self.call_api("GET", f"/admin/products/{product_no}/variants/{variant_code}", headers=self.__get_headers())
+    def find_product_variant(self, product_no, variant_code, params=None):
+        return self.call_api("GET", f"/admin/products/{product_no}/variants/{variant_code}", params=params, headers=self.__get_headers())
 
     def find_product_count(self):
         return self.call_api("GET", "/admin/products/count", headers=self.__get_headers())
