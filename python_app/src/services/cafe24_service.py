@@ -145,8 +145,8 @@ class Cafe24Service:
 
                         # update product
                         cafe24_update_product = self.cafe24_api.update_product(product_no=str(cafe24_product['product_no']), request_data=request_data)
-                        ApiLog.save(type='product', message=api_log_message, orgin_key=origin_product['id'], cafe24_key=int(cafe24_product['product_no']), response=cafe24_update_product)
                         result_cafe24_products.append(cafe24_product)
+                        ApiLog.save(type='product', message=api_log_message, origin_key=origin_product['id'], cafe24_key=int(cafe24_product['product_no']), response=cafe24_update_product)
 
                         time.sleep(0.3)
 
@@ -173,7 +173,7 @@ class Cafe24Service:
                             cafe24_update_product_variants = self.cafe24_api.update_product_variants(product_no=str(cafe24_product['product_no']), request_data=request_data)
                             api_log_message = 'UPDATE PRODUCT VARIANTS'
 
-                        ApiLog.save(type='product', message=api_log_message, orgin_key=origin_product['id'], cafe24_key=int(cafe24_product['product_no']), response=cafe24_update_product_variants)
+                        ApiLog.save(type='product', message=api_log_message, origin_key=origin_product['id'], cafe24_key=int(cafe24_product['product_no']), response=cafe24_update_product_variants)
                         result_cafe24_products.append(cafe24_product)
 
             return jsonify(result_cafe24_products)
