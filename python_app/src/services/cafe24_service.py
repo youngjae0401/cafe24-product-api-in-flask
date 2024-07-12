@@ -30,6 +30,41 @@ class Cafe24Service:
     def find_suppliers_user(self, cafe24_supplier_user_id):
         return self.cafe24_api.find_suppliers_user(user_id=cafe24_supplier_user_id, params={'shop_no': self.shop_no})
 
+    def find_customers(self, request):
+        # 휴대전화 또는 회원아이디의 값이 있어야 조회 가능
+        if not request.get('cellphone') and not request.get('member_id'):
+            raise ValueError("'cellphone' 또는 'member_id' 필드값을 입력해주세요.")
+
+        params = {
+            'shop_no': self.shop_no,
+            'cellphone': request.get('cellphone'),
+            'member_id': request.get('member_id'),
+            'fields': request.get('fields')
+        }
+
+        return self.cafe24_api.find_customers(params=params)
+    
+    def find_orders(self, request):
+        # 시작일과 종료일 값이 있어야 조회 가능
+        if not request.get('start_date') or not request.get('end_date'):
+            raise ValueError("'start_date'과 'end_date' 필드값을 입력해주세요.")
+
+        params = {
+            'shop_no': self.shop_no,
+            'member_id': request.get('member_id'),
+            'order_id': request.get('order_id'),
+            'order_status': request.get('order_status'),
+            'payment_status': request.get('payment_status'),
+            'date_type': request.get('date_type'),
+            'start_date': request.get('start_date'),
+            'end_date': request.get('end_date'),
+            'limit': request.get('limit'),
+            'offset': request.get('offset'),
+            'fields': request.get('fields')
+        }
+
+        return self.cafe24_api.find_orders(params=params)
+
     def find_suppliers(self, request):
         params = {
             'shop_no': self.shop_no,

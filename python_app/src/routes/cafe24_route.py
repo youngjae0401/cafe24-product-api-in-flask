@@ -59,3 +59,11 @@ def call_find_suppliers_user(cafe24_supplier_user_id):
 @cafe24_bp.route('/update-supplier-users', methods=['GET'])
 def call_update_suppliers_users():
     return cafe24_service.update_suppliers_users(request.args)
+
+@cafe24_bp.route('/customers', methods=['GET'])
+def call_find_customers():
+    return cafe24_service.find_customers(request.args)
+
+@cafe24_bp.route('/orders', methods=['GET'])
+def call_find_orders():
+    return cafe24_service.find_orders(request.args)

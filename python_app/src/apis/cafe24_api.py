@@ -115,6 +115,12 @@ class Cafe24API:
     def find_suppliers_users(self, params=None):
         return self.call_api("GET", f"/admin/suppliers/users", params=params, headers=self.__get_headers())
 
+    def find_customers(self, params=None):
+        return self.call_api("GET", f"/admin/customers", params=params, headers=self.__get_headers())
+
+    def find_orders(self, params=None):
+        return self.call_api("GET", f"/admin/orders", params=params, headers=self.__get_headers())
+
     def update_suppliers_user(self, user_id, request_data):
         return self.call_api("PUT", f"/admin/suppliers/users/{user_id}", json={"request": request_data}, headers=self.__get_headers())
 
